@@ -2,13 +2,14 @@ from flask import Flask, render_template
 import pandas as pd
 
 app = Flask(__name__)
-
-
 # __name__ contains value of __main__ when executed, but when imported it holds the name of script name(main.py).
+
+stations = pd.read_csv("data/stations.txt", skiprows=17)
+stations = stations[["STAID", "STANAME                                 "]]
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", data=stations.to_html())
     # flask will look for html documents in templates folder.
 
 
