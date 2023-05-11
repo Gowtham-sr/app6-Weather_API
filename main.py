@@ -1,17 +1,25 @@
 from flask import Flask, render_template
+import pandas as pd
 
 app = Flask(__name__)
-# __name__ contains value of __main__ when executed, but when imported it holds the name of script(main.py).
+
+
+# __name__ contains value of __main__ when executed, but when imported it holds the name of script name(main.py).
 
 @app.route("/")
 def home():
     return render_template("home.html")
     # flask will look for html documents in templates folder.
+
+
 # When app route is called(When user visits), the function is executed.
 
 @app.route("/api/v1/<station>/<date>")
 def api(station, date):
-    temperature = 23
+    filename = "data/TG_STAID" + str(station).zfill(6) + ".txt"
+    # zfill method adds 0 to the string until the given string meets with 6 letters
+    df = pd.read_csv(filename, skiprows=20, parse_dates=["    DATE"])
+    temperature = df.loc[df['    DATE'] == date]["   TG"].squeeze() / 10
     return {"station": station,
             "date": date,
             "temperature": temperature}
